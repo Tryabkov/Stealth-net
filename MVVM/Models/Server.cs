@@ -33,25 +33,25 @@ namespace test_chat.MVVM.Models
         public async void Send()
         {
             await streamWriter.WriteLineAsync($"Hello");
-            await Console.Out.WriteLineAsync("sended");
+            await Console.Out.WriteLineAsync("send");
         }
 
-        public void StartReceiving()
+        public async void StartReceiving()
         {
             listener = new TcpListener(IPAddress.Any, 8888);
             listener.Start();
-            Console.WriteLine("Started");
+            await Console.Out.WriteLineAsync("Started");
 
-            while (true) 
+            var client = await listener.AcceptTcpClientAsync();
+            while (true)
             {
-                var client = listener.AcceptTcpClient();
-                Task.Factory.StartNew(() =>
-                {
-                    var line = streamReader.ReadLine();
-                    Console.WriteLine("Received");
-                    Console.WriteLine(line?.ToString());
-                });
+                var line = await streamReader.ReadLineAsync();
+                await Console.Out.WriteLineAsync("Received");
+                await Console.Out.WriteLineAsync(line?.ToString());
+                await Task.Delay(100);
+                
             }
+
         }
 
 
