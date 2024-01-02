@@ -40,7 +40,7 @@
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
             
-            <TextBlock Text="{Binding Main_TextBox, Mode=TwoWay}"/>
+            <TextBox Text="{Binding Main_TextBox, Mode=TwoWay}"/>
             <Button Grid.Column="1" Margin="3" Command="{Binding Send_ButtonClick}"/>
         </Grid>
     </Grid>
