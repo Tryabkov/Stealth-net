@@ -30,13 +30,17 @@
             <Button Content="Connect" Margin="0,2,0,0" Command="{Binding Connect_ButtonClick}"/>
         </StackPanel>
 
+        <ListBox Grid.Column="1" ItemsSource="{Binding Messages_ListBox}" >
+            
+        </ListBox>
+        
         <Grid Grid.Column="1" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
             
-            <TextBlock/>
+            <TextBlock Text="{Binding Main_TextBox, Mode=TwoWay}"/>
             <Button Grid.Column="1" Margin="3" Command="{Binding Send_ButtonClick}"/>
         </Grid>
     </Grid>

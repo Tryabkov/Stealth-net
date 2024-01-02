@@ -7,73 +7,54 @@ using System.Windows;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using System.Reflection.PortableExecutable;
+using System.Windows.Shapes;
 
 
 namespace test_chat.MVVM.Models
 {
     internal class Server
     {
+        const int PORT = 8888;
         TcpClient client;
         StreamReader streamReader;
         StreamWriter streamWriter;
-
         TcpListener listener;
 
-        
+        public delegate void EventHandler(StreamReader streamReader);
+        public event EventHandler? MessageReceived_Event;
+
         public void Connect(string ip)
         {
             client = new TcpClient();
-            client.Connect(IPAddress.Parse(ip), 8888);
+            client.Connect(IPAddress.Parse(ip), PORT);
             streamReader = new StreamReader(client.GetStream());
             streamWriter = new StreamWriter(client.GetStream());
             streamWriter.AutoFlush = true;
-            Console.WriteLine("Connected");
+            Console.WriteLine($"{DateTime.Now}[LOG]: Connected");
         }
 
-        public async void Send()
+        public async void Send(string message)
         {
-            await streamWriter.WriteLineAsync($"Hello");
-            await Console.Out.WriteLineAsync("send");
+            await streamWriter.WriteLineAsync(message);
+            await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: send");
         }
 
         public async void StartReceiving()
         {
-            listener = new TcpListener(IPAddress.Any, 8888);
+            listener = new TcpListener(IPAddress.Any, PORT);
             listener.Start();
-            await Console.Out.WriteLineAsync("Started");
-
+            await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Started");
             var client = await listener.AcceptTcpClientAsync();
-            while (true)
+
+            while (client.Connected)
             {
-                var line = await streamReader.ReadLineAsync();
-                await Console.Out.WriteLineAsync("Received");
-                await Console.Out.WriteLineAsync(line?.ToString());
+                streamReader = new StreamReader(client.GetStream());
+                MessageReceived_Event.Invoke(streamReader);
+                await Console.Out.WriteLineAsync("\n" + await streamReader.ReadLineAsync());
                 await Task.Delay(100);
-                
             }
-
         }
-
-
-
-        //public async void OpenSocket()
-        //{
-        //    
-
-        //    Socket socketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        //    socketListener.Bind(endPoint);
-        //    socketListener.Listen(1000);
-        //    Console.WriteLine(socketListener.LocalEndPoint);
-
-        //    await socketListener.AcceptAsync();
-        //}
-
-        //public async void Connect(string ip, string message = "Hello")
-        //{
-        //    Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        //    await socket.ConnectAsync(IPAddress.Parse(ip), 8888);
-        //    await Console.Out.WriteLineAsync($"Successful connection to {ip}:8888");
-        //}
     }
     
     public class Client
@@ -89,8 +70,5 @@ namespace test_chat.MVVM.Models
         {
             
         }
-
-
-
     }
 }
