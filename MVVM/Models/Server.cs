@@ -15,31 +15,15 @@ namespace test_chat.MVVM.Models
     {
         TcpListener tcpListener = new TcpListener(IPAddress.Any, 8888); // сервер для прослушивания
 
-        public async Task ListenAsync()
+        public void OpenSocket(string ip)
         {
-            try
-            {
-                tcpListener.Start();
-                Console.WriteLine("Server is running. Waiting for connections...");
-
-                while (true)
-                {
-                    TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
-                    await Console.Out.WriteLineAsync();
-                    //ClientObject clientObject = new ClientObject(tcpClient, this);
-                    //clients.Add(clientObject);
-                    //Task.Run(clientObject.ProcessAsync);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                //Disconnect();
-            }
+            Socket socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(IPAddress.Parse(ip), 8888);
+            Console.WriteLine(socket.LocalEndPoint);
+            Console.WriteLine(socket.RemoteEndPoint);
         }
+
+
     }
     
     public class Client
@@ -53,12 +37,7 @@ namespace test_chat.MVVM.Models
 
         Client(TcpClient tcpClient, Server server) 
         {
-            _tcpClient = tcpClient;
-            _server = server;
-
-            var stream = tcpClient.GetStream();
-            Reader = new StreamReader(stream);
-            Writer = new StreamWriter(stream);
+            
         }
 
 

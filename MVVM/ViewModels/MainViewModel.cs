@@ -39,7 +39,7 @@ namespace test_chat.MVVM.ViewModels
                 return new DelegateCommand((obj) =>
                 {
                     Server serv = new Server();
-                    serv.ListenAsync();
+                    serv.OpenSocket(ReceiverIp_TextBox);
                 });
             }
         }
@@ -51,6 +51,17 @@ namespace test_chat.MVVM.ViewModels
                 return new DelegateCommand((obj) =>
                 {
                     SetIp();
+                });
+            }
+        }
+
+        public ICommand Send_ButtonClick
+        {
+            get
+            {
+                return new DelegateCommand((obj) =>
+                {
+                   
                 });
             }
         }
