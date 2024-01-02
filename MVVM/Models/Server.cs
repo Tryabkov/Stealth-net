@@ -13,24 +13,65 @@ namespace test_chat.MVVM.Models
 {
     internal class Server
     {
-        public async void OpenSocket()
+        TcpClient client;
+        StreamReader streamReader;
+        StreamWriter streamWriter;
+
+        TcpListener listener;
+
+        public void Connect(string ip)
         {
-            var endPoint = new IPEndPoint(IPAddress.IPv6Any, 8888);
+            client = new TcpClient();
+            client.Connect(IPAddress.Parse(ip), 8888);
+            streamReader = new StreamReader(client.GetStream());
+            streamWriter = new StreamWriter(client.GetStream());
+            streamWriter.AutoFlush = true;
 
-            Socket socketListener = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
-            socketListener.Bind(endPoint);
-            socketListener.Listen(1000);
-            Console.WriteLine(socketListener.LocalEndPoint);
-
-            await socketListener.AcceptAsync();
+            listener = new TcpListener(IPAddress.Any, 8888);
+            listener.Start();
+            Receive();
         }
 
-        public async void Connect(string ip, string message = "Hello")
+        public async void Send()
         {
-            Socket socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
-            await socket.ConnectAsync(IPAddress.Parse(ip), 8888);
-            await Console.Out.WriteLineAsync($"Successful connection to {ip}:8888");
+            await streamWriter.WriteLineAsync($"Hello");
+            await Console.Out.WriteLineAsync("sended");
         }
+
+        private void Receive()
+        {
+            while (true) 
+            {
+                var client = listener.AcceptTcpClient();
+                Task.Factory.StartNew(() =>
+                {
+                    var line = streamReader.ReadLine();
+                    Console.WriteLine("Received");
+                    Console.WriteLine(line?.ToString());
+                });
+            }
+        }
+
+
+
+        //public async void OpenSocket()
+        //{
+        //    
+
+        //    Socket socketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //    socketListener.Bind(endPoint);
+        //    socketListener.Listen(1000);
+        //    Console.WriteLine(socketListener.LocalEndPoint);
+
+        //    await socketListener.AcceptAsync();
+        //}
+
+        //public async void Connect(string ip, string message = "Hello")
+        //{
+        //    Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //    await socket.ConnectAsync(IPAddress.Parse(ip), 8888);
+        //    await Console.Out.WriteLineAsync($"Successful connection to {ip}:8888");
+        //}
     }
     
     public class Client

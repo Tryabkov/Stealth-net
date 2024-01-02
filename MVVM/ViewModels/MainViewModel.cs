@@ -23,14 +23,14 @@ namespace test_chat.MVVM.ViewModels
         public MainViewModel() 
         {
             SetIp();
-            serv.OpenSocket();
+            //serv.OpenSocket();
         }
 
         private void SetIp()
         {
             string strHostName = Dns.GetHostName();
             IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
-            Ip_TextBlock = ipEntry?.AddressList[0].ToString();    
+            Ip_TextBlock = ipEntry?.AddressList[3].ToString();    
         }
 
         
@@ -62,7 +62,7 @@ namespace test_chat.MVVM.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                   
+                    serv.Send();
                 });
             }
         }
