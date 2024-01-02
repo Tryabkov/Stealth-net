@@ -23,7 +23,7 @@ namespace test_chat.MVVM.ViewModels
         public MainViewModel() 
         {
             SetIp();
-            //serv.OpenSocket();
+            serv.StartReceiving();
         }
 
         private void SetIp()

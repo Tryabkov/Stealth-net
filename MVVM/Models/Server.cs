@@ -19,6 +19,7 @@ namespace test_chat.MVVM.Models
 
         TcpListener listener;
 
+        
         public void Connect(string ip)
         {
             client = new TcpClient();
@@ -26,10 +27,7 @@ namespace test_chat.MVVM.Models
             streamReader = new StreamReader(client.GetStream());
             streamWriter = new StreamWriter(client.GetStream());
             streamWriter.AutoFlush = true;
-
-            listener = new TcpListener(IPAddress.Any, 8888);
-            listener.Start();
-            Receive();
+            Console.WriteLine("Connected");
         }
 
         public async void Send()
@@ -38,8 +36,12 @@ namespace test_chat.MVVM.Models
             await Console.Out.WriteLineAsync("sended");
         }
 
-        private void Receive()
+        public void StartReceiving()
         {
+            listener = new TcpListener(IPAddress.Any, 8888);
+            listener.Start();
+            Console.WriteLine("Started");
+
             while (true) 
             {
                 var client = listener.AcceptTcpClient();
