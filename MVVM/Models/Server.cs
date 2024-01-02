@@ -13,17 +13,24 @@ namespace test_chat.MVVM.Models
 {
     internal class Server
     {
-        TcpListener tcpListener = new TcpListener(IPAddress.Any, 8888); // сервер для прослушивания
-
-        public void OpenSocket(string ip)
+        public async void OpenSocket()
         {
-            Socket socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(IPAddress.Parse(ip), 8888);
-            Console.WriteLine(socket.LocalEndPoint);
-            Console.WriteLine(socket.RemoteEndPoint);
+            var endPoint = new IPEndPoint(IPAddress.Any, 8888);
+
+            Socket socketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socketListener.Bind(endPoint);
+            socketListener.Listen(1000);
+            Console.WriteLine(socketListener.LocalEndPoint);
+
+            await socketListener.AcceptAsync();
         }
 
-
+        public async void Connect(string ip, string message = "Hello")
+        {
+            Socket socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+            await socket.ConnectAsync(IPAddress.Parse(ip), 8888);
+            await Console.Out.WriteLineAsync($"Successful connection to {ip}:8888");
+        }
     }
     
     public class Client

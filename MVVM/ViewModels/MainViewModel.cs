@@ -13,6 +13,7 @@ namespace test_chat.MVVM.ViewModels
 {
     class MainViewModel : Base.BaseVeiwModel
     {
+        Server serv = new Server();
         public string Ip_TextBlock { get => _ip_TextBlock; set { _ip_TextBlock = value; OnPropertyChanged(); } }
         private string? _ip_TextBlock;
 
@@ -22,8 +23,9 @@ namespace test_chat.MVVM.ViewModels
         public MainViewModel() 
         {
             SetIp();
+            serv.OpenSocket();
         }
-            
+
         private void SetIp()
         {
             string strHostName = Dns.GetHostName();
@@ -38,8 +40,7 @@ namespace test_chat.MVVM.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                    Server serv = new Server();
-                    serv.OpenSocket(ReceiverIp_TextBox);
+                    serv.Connect(ReceiverIp_TextBox);
                 });
             }
         }
