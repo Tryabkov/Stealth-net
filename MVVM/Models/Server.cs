@@ -15,9 +15,9 @@ namespace test_chat.MVVM.Models
     {
         public async void OpenSocket()
         {
-            var endPoint = new IPEndPoint(IPAddress.Any, 8888);
+            var endPoint = new IPEndPoint(IPAddress.IPv6Any, 8888);
 
-            Socket socketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Socket socketListener = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
             socketListener.Bind(endPoint);
             socketListener.Listen(1000);
             Console.WriteLine(socketListener.LocalEndPoint);
