@@ -21,12 +21,12 @@ namespace test_chat.MVVM.Models
         StreamWriter streamWriter;
         TcpListener listener;
 
-        public delegate void AsyncEventHandler(StreamReader streamReader);
+        public delegate void AsyncEventHandler(string line);
         public event AsyncEventHandler? MessageReceived_Event;
 
         public void Connect(string ip)
         {
-            client = new TcpClient();
+            client = new TcpClient(IPAddress.Parse(ip).AddressFamily); //
             client.Connect(IPAddress.Parse(ip), PORT);
             streamReader = new StreamReader(client.GetStream());
             streamWriter = new StreamWriter(client.GetStream());
@@ -42,7 +42,7 @@ namespace test_chat.MVVM.Models
 
         public async void StartReceiving()
         {
-            listener = new TcpListener(IPAddress.Any, PORT);
+            listener = new TcpListener(IPAddress.IPv6Any, PORT);
             listener.Start();
             await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Started");
             var client = await listener.AcceptTcpClientAsync();
@@ -50,13 +50,10 @@ namespace test_chat.MVVM.Models
             while (client.Connected)
             {
                 streamReader = new StreamReader(client.GetStream());
-                Task.Factory.StartNew(() =>
-                {
-                    MessageReceived_Event.Invoke(streamReader);
-
-                });
-                await Console.Out.WriteLineAsync("\n" + await streamReader.ReadLineAsync());
-                await Task.Delay(100);
+                var line = await streamReader.ReadLineAsync();
+                await Console.Out.WriteLineAsync("\n" + line);
+                MessageReceived_Event.Invoke(line);
+                //await Task.Delay(10);
             }
         }
     }

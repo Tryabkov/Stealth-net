@@ -22,7 +22,7 @@ namespace test_chat.MVVM.ViewModels
         public string ReceiverIp_TextBox { get => _receiverIp_TextBox; set { _receiverIp_TextBox = value; OnPropertyChanged(); } }
         private string _receiverIp_TextBox;
         public ObservableCollection<string> Messages_ListBox { get => _messages_ListBox; set { _messages_ListBox = value; OnPropertyChanged(); } }
-        private ObservableCollection<string> _messages_ListBox;
+        private ObservableCollection<string> _messages_ListBox = new ObservableCollection<string>();
 
         public string Main_TextBox { get => _main_TextBox; set { _main_TextBox = value; OnPropertyChanged(); } }
         private string _main_TextBox;
@@ -38,12 +38,12 @@ namespace test_chat.MVVM.ViewModels
         {
             string strHostName = Dns.GetHostName();
             IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
-            Ip_TextBlock = ipEntry?.AddressList[3].ToString();    
+            Ip_TextBlock = ipEntry?.AddressList[1].ToString();    
         }
 
-        private void MessageReceived(StreamReader streamReader)
+        private void MessageReceived(string line)
         {
-            Messages_ListBox.Add(streamReader.ReadToEnd());
+            Messages_ListBox.Add(line);
         }
 
         public ICommand Connect_ButtonClick
