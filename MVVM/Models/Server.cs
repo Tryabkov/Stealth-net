@@ -21,8 +21,8 @@ namespace test_chat.MVVM.Models
         StreamWriter streamWriter;
         TcpListener listener;
 
-        public delegate void EventHandler(StreamReader streamReader);
-        public event EventHandler? MessageReceived_Event;
+        public delegate void AsyncEventHandler(StreamReader streamReader);
+        public event AsyncEventHandler? MessageReceived_Event;
 
         public void Connect(string ip)
         {
@@ -50,7 +50,11 @@ namespace test_chat.MVVM.Models
             while (client.Connected)
             {
                 streamReader = new StreamReader(client.GetStream());
-                MessageReceived_Event.Invoke(streamReader);
+                Task.Factory.StartNew(() =>
+                {
+                    MessageReceived_Event.Invoke(streamReader);
+
+                });
                 await Console.Out.WriteLineAsync("\n" + await streamReader.ReadLineAsync());
                 await Task.Delay(100);
             }
