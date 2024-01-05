@@ -23,7 +23,7 @@
 
         <StackPanel Grid.RowSpan="2" Margin="5">
             <TextBlock Text="Ur Ip:" Margin="0,5,0,0"/>
-            <TextBox Margin="0,3,0,5" Text="{Binding Ip_TextBlock, Mode=OneWay}"/>
+            <TextBox Margin="0,3,0,5" Text="{Binding LocalIp_TextBlock, Mode=OneWay}"/>
             <Button Content="Update" Command="{Binding UpdateIp_ButtonClick}"/> 
             <TextBlock Text="Receiver IP:" Margin="0,20,0,2"/>
             <TextBox Margin="0,2,0,2" Text="{Binding ReceiverIp_TextBox, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus}"/>
