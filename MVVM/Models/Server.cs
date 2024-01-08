@@ -141,7 +141,7 @@ namespace test_chat.MVVM.Models
             switch (stage)
             {
                 case 0:
-                    SendMessage(HANDSHAKE_HEADER + (byte)keys.PublicKey + CurrentConnection.localPublicKey2 + LOCAL_IP);
+                    SendMessage(HANDSHAKE_HEADER + (byte)keys.PublicKey + CurrentConnection.localPublicKey2);
                     break; 
 
                 case 1:
