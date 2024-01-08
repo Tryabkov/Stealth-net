@@ -11,24 +11,35 @@ namespace test_chat.MVVM.Models
     {
         private Guid ID { get; } = new Guid();
 
-        private Aes aes;
-        private RSAParameters localPrivateKey { get; }
-        private RSAParameters localPublicKey { get; }
-        private RSAParameters RemotePublicKey { get; set; }
-        public string receiverIp { get; }
+        public byte[] AESKey;
+        public byte[] AESIV;
 
-        public Chat(string ReceiverIp)
+        public byte[] localPrivateKey;
+        public string localPrivateKey2;
+        public byte[] localPublicKey;
+        public string localPublicKey2;
+        public byte[] RemotePublicKey;
+        public string RemotePublicKey2;
+
+        public string receiverIp;
+
+        public bool IsHandshakeCompleted;
+
+        public Chat()
         {
-            receiverIp = ReceiverIp;
+            RSA rsa = RSA.Create(2048);
+            localPrivateKey = rsa.ExportRSAPrivateKey();
+            localPublicKey = rsa.ExportRSAPublicKey();
 
-            RSA rsa = RSA.Create();
-            localPrivateKey = rsa.ExportParameters(true);
-            localPublicKey = rsa.ExportParameters(false);
+            localPrivateKey2 = rsa.ToXmlString(true);
+            localPublicKey2 = rsa.ToXmlString(false);
         }
 
         public void GenerateAES()
         {
-            aes = Aes.Create();
+            var aes = Aes.Create();
+            AESKey = aes.Key;
+            AESIV = aes.IV;
         }
     }
 }
