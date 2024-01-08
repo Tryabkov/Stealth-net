@@ -33,6 +33,7 @@ namespace test_chat.MVVM.ViewModels
             SetIp();
             server = new Server(LocalIp_TextBlock, 8888);
             server.MessageReceived_Event += MessageReceived;
+            server.MessageSent_Event += MessageReceived;
             server.StartReceiving();
         }
 

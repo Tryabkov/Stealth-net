@@ -38,6 +38,7 @@ namespace test_chat.MVVM.Models
         #region events
         public delegate void AsyncEventHandler(string line);
         public event AsyncEventHandler? MessageReceived_Event;
+        public event AsyncEventHandler? MessageSent_Event;
         #endregion
 
         enum keys : byte
@@ -72,10 +73,11 @@ namespace test_chat.MVVM.Models
             if (handshake) { SendHandshake(); }
         }
 
-        public async void SendMessage(string message)
+        public async void SendMessage(string message, bool sendEvent = true)
         {
             await streamWriter.WriteLineAsync(message + LOCAL_IP);
             await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Send");
+            if (sendEvent) { MessageSent_Event.Invoke(message); }
         }
 
         public async void StartReceiving()
@@ -92,24 +94,13 @@ namespace test_chat.MVVM.Models
 
                 if (!MessageHandler.IsHandshakeRequest(line, HANDSHAKE_HEADER))
                 {
-                    await Console.Out.WriteLineAsync("\n" + line);
-                    MessageReceived_Event.Invoke(line);
+                    string msg = line.Substring(line.Length - LOCAL_IP.Length);
+                    await Console.Out.WriteLineAsync("\n" + msg);
+                    MessageReceived_Event.Invoke(msg);
                     //await Task.Delay(5);
                 }
                 else
                 {
-                    
-                        
-
-                    if (CurrentConnection == null)
-                    {
-                        //if (CurrentConnection.RemotePublicKey == null)
-                        //{
-
-                        //}
-                    }
-
-
                     switch ((byte)line[HANDSHAKE_HEADER.Length] - '0') //most efficient method
                     {
                         case (byte)keys.PublicKey: //must send session key encrypted with the received public key
@@ -118,11 +109,6 @@ namespace test_chat.MVVM.Models
                             CurrentConnection.GenerateAES(); 
                             SendHandshake(1);
                             break;
-
-                        //case (byte)keys.PrivateKey: //must continue handshake and send session key
-                        //    CurrentConnection.RemotePublicKey = Encoding.UTF8.GetBytes(line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PRIVATE_KEY_LENGTH));
-                        //    await Console.Out.WriteLineAsync();
-                        //    break;
 
                         case (byte)keys.SessionKey: 
                             CurrentConnection.AESKey = Encoding.UTF8.GetBytes(line.Substring(HANDSHAKE_HEADER.Length + 2, AES_KEY_LENGTH));
@@ -139,13 +125,13 @@ namespace test_chat.MVVM.Models
             switch (stage)
             {
                 case 0:
-                    SendMessage(HANDSHAKE_HEADER + (byte)keys.PublicKey + CurrentConnection.localPublicKey2);
+                    SendMessage(HANDSHAKE_HEADER + (byte)keys.PublicKey + CurrentConnection.localPublicKey2, false);
                     break; 
 
                 case 1:
                     SendMessage(HANDSHAKE_HEADER + (byte)keys.SessionKey +
                         Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESKey, CurrentConnection.RemotePublicKey)) +
-                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESIV, CurrentConnection.RemotePublicKey)));
+                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESIV, CurrentConnection.RemotePublicKey)), false);
                     break;
             }
         }
