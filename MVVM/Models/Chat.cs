@@ -16,7 +16,7 @@ namespace test_chat.MVVM.Models
 
         public string localPrivateKey2;
         public string localPublicKey2;
-        public string RemotePublicKey2;
+        public string RemotePublicKey;
 
         public string receiverIp;
 

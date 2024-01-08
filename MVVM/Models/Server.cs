@@ -69,7 +69,7 @@ namespace test_chat.MVVM.Models
             Connections.Add(CurrentConnection);
 
             Console.WriteLine($"{DateTime.Now}[LOG]: Connected {CurrentConnection.receiverIp}");
-            SendHandshake();
+            if (handshake) { SendHandshake(); }
         }
 
         public async void SendMessage(string message)
@@ -113,10 +113,8 @@ namespace test_chat.MVVM.Models
                     switch ((byte)line[HANDSHAKE_HEADER.Length] - '0') //most efficient method
                     {
                         case (byte)keys.PublicKey: //must send session key encrypted with the received public key
-                            var b = tcpClient;
-                            string ip =  line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH);
-                            Connect(ip, false);
-                            CurrentConnection.RemotePublicKey2 = line.Substring(HANDSHAKE_HEADER.Length + 1);
+                            Connect(line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH), false);
+                            CurrentConnection.RemotePublicKey = line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PUBLIC_KEY_LENGTH);
                             CurrentConnection.GenerateAES(); 
                             SendHandshake(1);
                             break;
@@ -146,8 +144,8 @@ namespace test_chat.MVVM.Models
 
                 case 1:
                     SendMessage(HANDSHAKE_HEADER + (byte)keys.SessionKey +
-                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESKey, CurrentConnection.RemotePublicKey2)) +
-                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESIV, CurrentConnection.RemotePublicKey2)));
+                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESKey, CurrentConnection.RemotePublicKey)) +
+                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESIV, CurrentConnection.RemotePublicKey)));
                     break;
             }
         }
