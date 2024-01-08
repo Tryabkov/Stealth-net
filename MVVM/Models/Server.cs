@@ -21,8 +21,8 @@ namespace test_chat.MVVM.Models
         const string HANDSHAKE_HEADER = "00000handshake initiation00000";
         const int AES_KEY_LENGTH = 32;
         const int AES_IV_LENGTH = 16;
-        const int RSA_PUBLIC_KEY_LENGTH = 270;
-        const int RSA_PRIVATE_KEY_LENGTH = 1191;
+        const int RSA_PUBLIC_KEY_LENGTH = 415;
+        const int RSA_PRIVATE_KEY_LENGTH = 1679;
         readonly string LOCAL_IP;
         readonly int PORT;
         readonly Guid GUID = Guid.NewGuid();
@@ -56,7 +56,7 @@ namespace test_chat.MVVM.Models
             PORT = port;
         }
 
-        public void Connect(string ip)
+        public void Connect(string ip, bool handshake = true)
         {
             tcpClient = new TcpClient(IPAddress.Parse(ip).AddressFamily);
             tcpClient.Connect(IPAddress.Parse(ip), PORT);
@@ -74,7 +74,7 @@ namespace test_chat.MVVM.Models
 
         public async void SendMessage(string message)
         {
-            await streamWriter.WriteLineAsync(message);
+            await streamWriter.WriteLineAsync(message + LOCAL_IP);
             await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Send");
         }
 
@@ -98,32 +98,33 @@ namespace test_chat.MVVM.Models
                 }
                 else
                 {
+                    
+                        
+
                     if (CurrentConnection == null)
                     {
-                        if (true) //TODO verification that chat created or remove if
-                        {
-                            Connections.Add(new Chat());
-                        }
-                        if (CurrentConnection.RemotePublicKey == null)
-                        {
+                        //if (CurrentConnection.RemotePublicKey == null)
+                        //{
 
-                        }
+                        //}
                     }
 
 
                     switch ((byte)line[HANDSHAKE_HEADER.Length] - '0') //most efficient method
                     {
                         case (byte)keys.PublicKey: //must send session key encrypted with the received public key
+                            var b = tcpClient;
+                            string ip =  line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH);
+                            Connect(ip, false);
                             CurrentConnection.RemotePublicKey2 = line.Substring(HANDSHAKE_HEADER.Length + 1);
                             CurrentConnection.GenerateAES(); 
-                            Connections.Add(CurrentConnection);
                             SendHandshake(1);
                             break;
 
-                        case (byte)keys.PrivateKey: //must continue handshake and send session key
-                            CurrentConnection.RemotePublicKey = Encoding.UTF8.GetBytes(line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PRIVATE_KEY_LENGTH));
-                            await Console.Out.WriteLineAsync();
-                            break;
+                        //case (byte)keys.PrivateKey: //must continue handshake and send session key
+                        //    CurrentConnection.RemotePublicKey = Encoding.UTF8.GetBytes(line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PRIVATE_KEY_LENGTH));
+                        //    await Console.Out.WriteLineAsync();
+                        //    break;
 
                         case (byte)keys.SessionKey: 
                             CurrentConnection.AESKey = Encoding.UTF8.GetBytes(line.Substring(HANDSHAKE_HEADER.Length + 2, AES_KEY_LENGTH));
@@ -140,7 +141,7 @@ namespace test_chat.MVVM.Models
             switch (stage)
             {
                 case 0:
-                    SendMessage(HANDSHAKE_HEADER + (byte)keys.PublicKey + CurrentConnection.localPublicKey2);
+                    SendMessage(HANDSHAKE_HEADER + (byte)keys.PublicKey + CurrentConnection.localPublicKey2 + LOCAL_IP);
                     break; 
 
                 case 1:

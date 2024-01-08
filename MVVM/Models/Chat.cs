@@ -14,11 +14,8 @@ namespace test_chat.MVVM.Models
         public byte[] AESKey;
         public byte[] AESIV;
 
-        public byte[] localPrivateKey;
         public string localPrivateKey2;
-        public byte[] localPublicKey;
         public string localPublicKey2;
-        public byte[] RemotePublicKey;
         public string RemotePublicKey2;
 
         public string receiverIp;
@@ -28,9 +25,6 @@ namespace test_chat.MVVM.Models
         public Chat()
         {
             RSA rsa = RSA.Create(2048);
-            localPrivateKey = rsa.ExportRSAPrivateKey();
-            localPublicKey = rsa.ExportRSAPublicKey();
-
             localPrivateKey2 = rsa.ToXmlString(true);
             localPublicKey2 = rsa.ToXmlString(false);
         }
