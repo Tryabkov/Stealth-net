@@ -94,7 +94,7 @@ namespace test_chat.MVVM.Models
 
                 if (!MessageHandler.IsHandshakeRequest(line, HANDSHAKE_HEADER))
                 {
-                    string msg = line.Substring(line.Length - LOCAL_IP.Length);
+                    string msg = line.Substring(0, line.Length - LOCAL_IP.Length);
                     await Console.Out.WriteLineAsync("\n" + msg);
                     MessageReceived_Event.Invoke(msg);
                     //await Task.Delay(5);
@@ -104,7 +104,7 @@ namespace test_chat.MVVM.Models
                     switch ((byte)line[HANDSHAKE_HEADER.Length] - '0') //most efficient method
                     {
                         case (byte)Keys.PublicKey: //must send session key encrypted with the received public key
-                            Connect(line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH), isHandshakeRequired: false);
+                            Connect(ip: line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH), isHandshakeRequired: false);
                             CurrentConnection.SharedPublicKey = line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PUBLIC_KEY_LENGTH);
                             CurrentConnection.GenerateAES(); 
                             SendHandshake(1);
@@ -125,7 +125,7 @@ namespace test_chat.MVVM.Models
             switch (stage)
             {
                 case 0:
-                    SendMessage(HANDSHAKE_HEADER + (byte)Keys.PublicKey + CurrentConnection.localPublicKey2, sendEvent: false);
+                    SendMessage(HANDSHAKE_HEADER + (byte)Keys.PublicKey + CurrentConnection.localPublicKey, sendEvent: false);
                     break; 
 
                 case 1:

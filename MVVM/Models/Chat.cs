@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using EllipticCurve;
 
 namespace test_chat.MVVM.Models
 {
@@ -14,9 +15,13 @@ namespace test_chat.MVVM.Models
         public byte[] AESKey;
         public byte[] AESIV;
 
-        public string localPrivateKey2;
-        public string localPublicKey2;
+        public string localPrivateKey;
+        public string localPublicKey;
         public string SharedPublicKey;
+
+        public string localPrivateKeyCUR;
+        public string localPublicKeyCUR;
+        public string SharedPublicKeyCUR;
 
         public string receiverIp;
 
@@ -25,8 +30,12 @@ namespace test_chat.MVVM.Models
         public Chat()
         {
             RSA rsa = RSA.Create(2048);
-            localPrivateKey2 = rsa.ToXmlString(true);
-            localPublicKey2 = rsa.ToXmlString(false);
+            localPrivateKey = rsa.ToXmlString(true);
+            localPublicKey = rsa.ToXmlString(false);
+
+            var privateKey = new PrivateKey();
+            localPublicKeyCUR = privateKey.publicKey().toPem();
+            localPrivateKeyCUR = privateKey.toPem();
         }
 
         public void GenerateAES()
