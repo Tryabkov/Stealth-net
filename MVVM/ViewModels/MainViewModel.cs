@@ -10,6 +10,7 @@ using System.Windows;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
+using System.Net.Sockets;
 
 
 namespace test_chat.MVVM.ViewModels
@@ -39,9 +40,12 @@ namespace test_chat.MVVM.ViewModels
 
         private void SetIp()
         {
-            string strHostName = Dns.GetHostName();
-            IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
-            LocalIp_TextBlock = ipEntry?.AddressList[3].ToString();    
+            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+                LocalIp_TextBlock = endPoint.Address.ToString();
+            }
         }
 
         private void MessageReceived(string line)

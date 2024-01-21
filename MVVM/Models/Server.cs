@@ -41,7 +41,7 @@ namespace test_chat.MVVM.Models
         public event AsyncEventHandler? MessageSent_Event;
         #endregion
 
-        enum keys : byte
+        enum Keys : byte
         {
             PublicKey,
             PrivateKey, 
@@ -57,7 +57,7 @@ namespace test_chat.MVVM.Models
             PORT = port;
         }
 
-        public void Connect(string ip, bool handshake = true)
+        public void Connect(string ip, bool isHandshakeRequired = true)
         {
             tcpClient = new TcpClient(IPAddress.Parse(ip).AddressFamily);
             tcpClient.Connect(IPAddress.Parse(ip), PORT);
@@ -70,7 +70,7 @@ namespace test_chat.MVVM.Models
             Connections.Add(CurrentConnection);
 
             Console.WriteLine($"{DateTime.Now}[LOG]: Connected {CurrentConnection.receiverIp}");
-            if (handshake) { SendHandshake(); }
+            if (isHandshakeRequired) { SendHandshake(); }
         }
 
         public async void SendMessage(string message, bool sendEvent = true)
@@ -103,18 +103,18 @@ namespace test_chat.MVVM.Models
                 {
                     switch ((byte)line[HANDSHAKE_HEADER.Length] - '0') //most efficient method
                     {
-                        case (byte)keys.PublicKey: //must send session key encrypted with the received public key
-                            Connect(line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH), false);
-                            CurrentConnection.RemotePublicKey = line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PUBLIC_KEY_LENGTH);
+                        case (byte)Keys.PublicKey: //must send session key encrypted with the received public key
+                            Connect(line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH), isHandshakeRequired: false);
+                            CurrentConnection.SharedPublicKey = line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PUBLIC_KEY_LENGTH);
                             CurrentConnection.GenerateAES(); 
                             SendHandshake(1);
                             break;
 
-                        case (byte)keys.SessionKey: 
+                        case (byte)Keys.SessionKey: 
                             CurrentConnection.AESKey = Encoding.UTF8.GetBytes(line.Substring(HANDSHAKE_HEADER.Length + 2, AES_KEY_LENGTH));
                             CurrentConnection.AESIV  = Encoding.UTF8.GetBytes(line.Substring(HANDSHAKE_HEADER.Length + 2 + AES_KEY_LENGTH, AES_IV_LENGTH));
                             break;
-                        //additional date with handshake header, like ip and public key 
+                        //additional date with isHandshakeRequired header, like ip and public key 
                     }
                 }
             }
@@ -125,13 +125,13 @@ namespace test_chat.MVVM.Models
             switch (stage)
             {
                 case 0:
-                    SendMessage(HANDSHAKE_HEADER + (byte)keys.PublicKey + CurrentConnection.localPublicKey2, false);
+                    SendMessage(HANDSHAKE_HEADER + (byte)Keys.PublicKey + CurrentConnection.localPublicKey2, sendEvent: false);
                     break; 
 
                 case 1:
-                    SendMessage(HANDSHAKE_HEADER + (byte)keys.SessionKey +
-                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESKey, CurrentConnection.RemotePublicKey)) +
-                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESIV, CurrentConnection.RemotePublicKey)), false);
+                    SendMessage(HANDSHAKE_HEADER + (byte)Keys.SessionKey +
+                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESKey, CurrentConnection.SharedPublicKey)) +
+                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsync(CurrentConnection.AESIV, CurrentConnection.SharedPublicKey)), sendEvent: false);
                     break;
             }
         }
@@ -167,7 +167,7 @@ namespace test_chat.MVVM.Models
             RSA rsa = RSA.Create();
             rsa.FromXmlString(keyXML);
 
-            return rsa.Encrypt(message, RSAEncryptionPadding.OaepSHA1);
+            return rsa.Encrypt(message, RSAEncryptionPadding.OaepSHA256);
         }
         #endregion
 
