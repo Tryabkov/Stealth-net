@@ -33,8 +33,8 @@ namespace test_chat.MVVM.ViewModels
         { 
             SetIp();
             server = new Server(LocalIp_TextBlock, 8888);
-            server.MessageReceived_Event += MessageReceived;
-            server.MessageSent_Event += MessageReceived;
+            server.MessageReceived_Event += OnMessageReceived;
+            server.MessageSent_Event += OnMessageSended;
             server.StartReceiving();
         }
 
@@ -45,10 +45,15 @@ namespace test_chat.MVVM.ViewModels
                 socket.Connect("8.8.8.8", 65530);
                 IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
                 LocalIp_TextBlock = endPoint.Address.ToString();
-            }
+            }// checks IP address
         }
 
-        private void MessageReceived(string line)
+        private void OnMessageSended(string line)
+        {
+            Messages_ListBox.Add(line);
+        }
+
+        private void OnMessageReceived(string line)
         {
             Messages_ListBox.Add(line);
         }

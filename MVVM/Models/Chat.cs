@@ -12,6 +12,7 @@ namespace test_chat.MVVM.Models
     {
         private Guid ID { get; } = new Guid();
 
+        #region cryptographic keys
         public byte[] AESKey;
         public byte[] AESIV;
 
@@ -19,25 +20,32 @@ namespace test_chat.MVVM.Models
         public string localPublicKey;
         public string SharedPublicKey;
 
-        public string localPrivateKeyCUR;
-        public string localPublicKeyCUR;
-        public string SharedPublicKeyCUR;
-
+        public string localCurvePrivateKey;
+        public string localCurvePublicKey;
+        public string SharedCurvePublicKey;
+        #endregion
+            
         public string receiverIp;
 
         public bool IsHandshakeCompleted;
 
+        /// <summary>
+        /// creates local pairs of RSA keys and Curve25519 keys
+        /// </summary>
         public Chat()
         {
             RSA rsa = RSA.Create(2048);
             localPrivateKey = rsa.ToXmlString(true);
             localPublicKey = rsa.ToXmlString(false);
 
-            var privateKey = new PrivateKey();
-            localPublicKeyCUR = privateKey.publicKey().toPem();
-            localPrivateKeyCUR = privateKey.toPem();
+            var privateKey = new EllipticCurve.PrivateKey();
+            localCurvePublicKey = privateKey.publicKey().toPem();
+            localCurvePrivateKey = privateKey.toPem();
         }
 
+        /// <summary>
+        /// creates session key
+        /// </summary>
         public void GenerateAES()
         {
             var aes = Aes.Create();

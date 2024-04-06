@@ -21,10 +21,13 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.RowSpan="2" Margin="5">
-            <TextBlock Text="Ur Ip:" Margin="0,5,0,0"/>
-            <TextBox Margin="0,3,0,5" Text="{Binding LocalIp_TextBlock, Mode=OneWay}"/>
-            <Button Content="Update" Command="{Binding UpdateIp_ButtonClick}"/> 
+        <StackPanel Grid.RowSpan="2" Margin="10,15,5,5">
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,5">
+                <TextBlock Text="Ur Ip:"/>
+                <TextBox Text="{Binding LocalIp_TextBlock, Mode=OneWay}" Background="White" BorderBrush="White" Margin="5,0,5,0"/>
+                <Button Content="Update" Command="{Binding UpdateIp_ButtonClick}"/> 
+            </StackPanel>
+
             <TextBlock Text="Receiver IP:" Margin="0,20,0,2"/>
             <TextBox Margin="0,2,0,2" Text="{Binding ReceiverIp_TextBox, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus}"/>
             <Button Content="Connect" Margin="0,2,0,0" Command="{Binding Connect_ButtonClick}"/>
