@@ -122,8 +122,8 @@ namespace test_chat.MVVM.Models
                     switch ((byte)line[HANDSHAKE_HEADER.Length] - '0') //Most efficient method
                     {
                         case (byte)KeysId.PublicKey: //Sends session key encrypted with the received public key
-                            Connect(ip: line.Substring(HANDSHAKE_HEADER.Length + 1 + CURVE_PUBLIC_KEY_LENGTH), isHandshakeRequired: false); //Extract IP from line
-                            CurrentConnection.SharedCurvePublicKey = line.Substring(HANDSHAKE_HEADER.Length + 1, CURVE_PUBLIC_KEY_LENGTH);  //Extract public key from line
+                            Connect(ip: line.Substring(HANDSHAKE_HEADER.Length + 1 + RSA_PUBLIC_KEY_LENGTH), isHandshakeRequired: false); //Extract IP from line
+                            CurrentConnection.SharedPublicKey = line.Substring(HANDSHAKE_HEADER.Length + 1, RSA_PUBLIC_KEY_LENGTH);  //Extract public key from line
 
                             CurrentConnection.GenerateAES(); 
                             SendHandshake(stage: 2);
@@ -157,8 +157,8 @@ namespace test_chat.MVVM.Models
 
                 case 2: //send session key, encrypted by shared key
                     SendMessage(HANDSHAKE_HEADER + (byte)KeysId.SessionKey +
-                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsymmetric(CurrentConnection.AESKey, CurrentConnection.SharedCurvePublicKey)) +
-                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsymmetric(CurrentConnection.AESIV, CurrentConnection.SharedCurvePublicKey)), sendEvent: false);
+                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsymmetric(CurrentConnection.AESKey, CurrentConnection.SharedPublicKey)) +
+                        Encoding.UTF8.GetString(MessageHandler.EncryptMessageAsymmetric(CurrentConnection.AESIV,  CurrentConnection.SharedPublicKey)), sendEvent: false);
                     break;
             }
         }
