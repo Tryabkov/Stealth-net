@@ -20,5 +20,10 @@ namespace test_chat
         {
             InitializeComponent();
         }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Clipboard.SetText(((TextBlock)sender).Text);
+        }
     }
 }

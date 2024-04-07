@@ -61,7 +61,7 @@ namespace test_chat.MVVM.Models
             LOCAL_IP = localIp;
             PORT = port;
         }
-
+            
         /// <summary>
         /// Builds connection and sends handshake if it necessary.
         /// </summary>
@@ -90,8 +90,13 @@ namespace test_chat.MVVM.Models
         /// <param name="sendEvent"></param>
         public async void SendMessage(string message, bool sendEvent = true)
         {
-            await streamWriter.WriteLineAsync(message + LOCAL_IP);
-            await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Send");
+            if (streamWriter != null)
+            {
+                await streamWriter.WriteLineAsync(message + LOCAL_IP);
+            }
+            else MessageBox.Show("You not connected");
+
+            await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Send {message}");
             if (sendEvent) { MessageSent_Event?.Invoke(message); }
         }
 
