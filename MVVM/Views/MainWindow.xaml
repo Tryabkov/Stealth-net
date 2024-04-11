@@ -60,7 +60,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border CornerRadius="6" Background="{Binding Background}">
-                        <TextBlock Text="{Binding Text}" Foreground="{Binding Foreground}" Margin="5,5,4,4" FontSize="14"/>
+                        <TextBlock Text="{Binding Text}" Foreground="{Binding Foreground}" Margin="5,5,4,4" FontSize="14" Padding="2,0,2,3"/>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
