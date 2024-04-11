@@ -78,7 +78,7 @@ namespace test_chat.MVVM.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                    SetIp();
+                    //SetIp();
                     server = new Server(LocalIp_TextBlock);
                     server.MessageReceived_Event += OnMessageReceived;
                     server.MessageSent_Event += OnMessageSend;
