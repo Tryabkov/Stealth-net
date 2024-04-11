@@ -37,7 +37,7 @@
         <StackPanel Grid.RowSpan="2" Margin="10,15,5,5" Panel.ZIndex="2">
             <StackPanel Orientation="Horizontal" Margin="0,4,0,5">
                 <TextBlock Text="Ur Ip:" VerticalAlignment="Center" FontSize="15"/>
-                <TextBlock Text="{Binding LocalIp_TextBlock, Mode=OneWay}"  
+                <TextBox Text="{Binding LocalIp_TextBlock, Mode=TwoWay}"  
                            Margin="5,0,5,0" VerticalAlignment="Center" FontSize="15" MouseDown="TextBlock_MouseDown"/>
                 
                 <Button Command="{Binding UpdateIp_ButtonClick}" Style="{StaticResource ImageButtonStyle}"

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -34,10 +35,10 @@ namespace test_chat.MVVM.ViewModels
         public MainViewModel()
         { 
             SetIp();
-            server = new Server(LocalIp_TextBlock);
-            server.MessageReceived_Event += OnMessageReceived;
-            server.MessageSent_Event += OnMessageSend;
-            server.StartReceiving();
+            //server = new Server(LocalIp_TextBlock);
+            //server.MessageReceived_Event += OnMessageReceived;
+            //server.MessageSent_Event += OnMessageSend;
+            //server.StartReceiving();
         }
 
         private void SetIp()
@@ -78,6 +79,10 @@ namespace test_chat.MVVM.ViewModels
                 return new DelegateCommand((obj) =>
                 {
                     SetIp();
+                    server = new Server(LocalIp_TextBlock);
+                    server.MessageReceived_Event += OnMessageReceived;
+                    server.MessageSent_Event += OnMessageSend;
+                    server.StartReceiving();
                 });
             }
         }
