@@ -27,7 +27,7 @@ namespace test_chat.MVVM.ViewModels
         public string ReceiverIp_TextBox { get => _receiverIp_TextBox; set { _receiverIp_TextBox = value; OnPropertyChanged(); } }
         private string _receiverIp_TextBox;
         public ObservableCollection<Message> Messages { get => _messages; set { _messages = value; OnPropertyChanged(); } }
-        private ObservableCollection<Message> _messages = new ObservableCollection<Message>() { new Message("aboba", true), new Message("aboba", false) };
+        private ObservableCollection<Message> _messages = new ObservableCollection<Message>();
 
         public string Main_TextBox { get => _main_TextBox; set { _main_TextBox = value; OnPropertyChanged(); } }
         private string _main_TextBox;
@@ -104,8 +104,8 @@ namespace test_chat.MVVM.ViewModels
     {
         static readonly public SolidColorBrush ReceivedMessageColor = new SolidColorBrush(Color.FromArgb(255, 13, 13, 13));
         static readonly public SolidColorBrush ReceivedMessageTextColor = new SolidColorBrush(Color.FromArgb(255, 255, 252, 255));
-        static readonly public SolidColorBrush SendMessageColorTextColor = new SolidColorBrush(Color.FromArgb(255, 13, 13, 13));
-        static readonly public SolidColorBrush SendMessageColor = new SolidColorBrush(Color.FromArgb(255, 252, 232, 3));
+        static readonly public SolidColorBrush SendMessageColorTextColor = new SolidColorBrush(Color.FromArgb(255, 184, 184, 184));
+        static readonly public SolidColorBrush SendMessageColor = new SolidColorBrush(Color.FromArgb(255, 13, 13, 13));
 
         public string Text { get; set; }
         public string Time { get; set; }
