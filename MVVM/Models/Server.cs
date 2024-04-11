@@ -183,7 +183,10 @@ namespace test_chat.MVVM.Models
             {
                 for (int i = 0; i < HSHeader.Length; i++)
                 {
-                    if (!(msg[i] == HSHeader[i])) { break; }
+                    if (!(msg[i] == HSHeader[i])) 
+                    {
+                        return false; 
+                    }
                 }
                 return true;
             }
