@@ -103,9 +103,9 @@ namespace test_chat.MVVM.ViewModels
     public class Message
     {
         static readonly public SolidColorBrush ReceivedMessageColor = new SolidColorBrush(Color.FromArgb(255, 13, 13, 13));
-        static readonly public SolidColorBrush ReceivedMessageTextColor = new SolidColorBrush(Color.FromArgb(255, 255, 252, 255));
-        static readonly public SolidColorBrush SendMessageColorTextColor = new SolidColorBrush(Color.FromArgb(255, 184, 184, 184));
-        static readonly public SolidColorBrush SendMessageColor = new SolidColorBrush(Color.FromArgb(255, 13, 13, 13));
+        static readonly public SolidColorBrush ReceivedMessageTextColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        static readonly public SolidColorBrush SendMessageColorTextColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        static readonly public SolidColorBrush SendMessageColor = new SolidColorBrush(Color.FromArgb(255, 122, 122, 122));
 
         public string Text { get; set; }
         public string Time { get; set; }
