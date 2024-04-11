@@ -56,7 +56,7 @@ namespace test_chat.MVVM.Models
         public List<Chat> Connections = new List<Chat>();
         public Chat CurrentConnection;
 
-        public Server(string localIp, ushort port)
+        public Server(string localIp, ushort port = 12303)
         { 
             LOCAL_IP = localIp;
             PORT = port;
@@ -93,11 +93,11 @@ namespace test_chat.MVVM.Models
             if (streamWriter != null)
             {
                 await streamWriter.WriteLineAsync(message + LOCAL_IP);
+                await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Send {message}");
+                if (sendEvent) { MessageSent_Event?.Invoke(message); }
             }
             else MessageBox.Show("You not connected");
 
-            await Console.Out.WriteLineAsync($"{DateTime.Now}[LOG]: Send {message}");
-            if (sendEvent) { MessageSent_Event?.Invoke(message); }
         }
 
         /// <summary>

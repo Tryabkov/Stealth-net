@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Geometry x:Key="circle_arrow_blackGeometry1">F1 M20,20z M0,0z M14.4044,15.0506C13.184,16.1183 11.6164,16.7045 9.99489,16.6997 8.37343,16.6948 6.80932,16.0992 5.59534,15.0243 4.38137,13.9494 3.60076,12.4689 3.39964,10.8599 3.19852,9.25099 3.59068,7.6239 4.50271,6.28324 5.41474,4.94258 6.78411,3.98027 8.35449,3.57644 9.92487,3.17261 11.5886,3.35495 13.0342,4.08933 14.4799,4.82371 15.6083,6.05978 16.2083,7.56615</Geometry>
+  <Geometry x:Key="circle_arrow_blackGeometry2">F1 M20,20z M0,0z M16.6252,3.3995L16.6252,7.56616 12.4585,7.56616</Geometry>
+  <DrawingGroup x:Key="circle_arrow_blackDrawingGroup" ClipGeometry="M0,0 V20 H20 V0 H0 Z">
+    <GeometryDrawing Geometry="{StaticResource circle_arrow_blackGeometry1}">
+      <GeometryDrawing.Pen>
+        <Pen Brush="#FF18191B" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+      </GeometryDrawing.Pen>
+    </GeometryDrawing>
+    <GeometryDrawing Geometry="{StaticResource circle_arrow_blackGeometry2}">
+      <GeometryDrawing.Pen>
+        <Pen Brush="#FF18191B" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+      </GeometryDrawing.Pen>
+    </GeometryDrawing>
+  </DrawingGroup>
+  <DrawingImage x:Key="circle_arrow_blackDrawingImage" Drawing="{StaticResource circle_arrow_blackDrawingGroup}" />
+  <Geometry x:Key="arrow_upGeometry1">F1 M28,28z M0,0z M14,20L14,8</Geometry>
+  <Geometry x:Key="arrow_upGeometry2">F1 M28,28z M0,0z M9,13L14,8 19,13</Geometry>
+  <DrawingGroup x:Key="arrow_upDrawingGroup" ClipGeometry="M0,0 V28 H28 V0 H0 Z">
+    <GeometryDrawing Brush="#FF18191B">
+      <GeometryDrawing.Geometry>
+        <RectangleGeometry RadiusX="8" RadiusY="8" Rect="0,0,28,28" />
+      </GeometryDrawing.Geometry>
+    </GeometryDrawing>
+    <GeometryDrawing Geometry="{StaticResource arrow_upGeometry1}">
+      <GeometryDrawing.Pen>
+        <Pen Brush="#FFFFFFFF" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+      </GeometryDrawing.Pen>
+    </GeometryDrawing>
+    <GeometryDrawing Geometry="{StaticResource arrow_upGeometry2}">
+      <GeometryDrawing.Pen>
+        <Pen Brush="#FFFFFFFF" Thickness="1.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+      </GeometryDrawing.Pen>
+    </GeometryDrawing>
+  </DrawingGroup>
+  <DrawingImage x:Key="arrow_upDrawingImage" Drawing="{StaticResource arrow_upDrawingGroup}" />
+</ResourceDictionary>

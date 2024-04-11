@@ -11,20 +11,22 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Net.Sockets;
+using System.Windows.Media;
 
 
 namespace test_chat.MVVM.ViewModels
 {
     class MainViewModel : Base.BaseVeiwModel
     {
+        
         Server server;
         public string LocalIp_TextBlock { get => _localIp_TextBlock; set { _localIp_TextBlock = value; OnPropertyChanged(); } }
         private string? _localIp_TextBlock;
 
         public string ReceiverIp_TextBox { get => _receiverIp_TextBox; set { _receiverIp_TextBox = value; OnPropertyChanged(); } }
         private string _receiverIp_TextBox;
-        public ObservableCollection<string> Messages_ListBox { get => _messages_ListBox; set { _messages_ListBox = value; OnPropertyChanged(); } }
-        private ObservableCollection<string> _messages_ListBox = new ObservableCollection<string>();
+        public ObservableCollection<Message> Messages { get => _messages; set { _messages = value; OnPropertyChanged(); } }
+        private ObservableCollection<Message> _messages = new ObservableCollection<Message>() { new Message("aboba", true), new Message("aboba", false) };
 
         public string Main_TextBox { get => _main_TextBox; set { _main_TextBox = value; OnPropertyChanged(); } }
         private string _main_TextBox;
@@ -32,9 +34,9 @@ namespace test_chat.MVVM.ViewModels
         public MainViewModel()
         { 
             SetIp();
-            server = new Server(LocalIp_TextBlock, 8888);
+            server = new Server(LocalIp_TextBlock);
             server.MessageReceived_Event += OnMessageReceived;
-            server.MessageSent_Event += OnMessageSended;
+            server.MessageSent_Event += OnMessageSend;
             server.StartReceiving();
         }
 
@@ -48,14 +50,14 @@ namespace test_chat.MVVM.ViewModels
             }// checks IP address
         }
 
-        private void OnMessageSended(string line)
+        private void OnMessageSend(string line)
         {
-            Messages_ListBox.Add(line);
+            Messages.Add(new Message(line, false));
         }
 
         private void OnMessageReceived(string line)
         {
-            Messages_ListBox.Add(line);
+            Messages.Add(new Message(line, true));
         }
 
         public ICommand Connect_ButtonClick
@@ -89,6 +91,34 @@ namespace test_chat.MVVM.ViewModels
                     server.SendMessage(Main_TextBox);
                     Main_TextBox = "";
                 });
+            }
+        }
+    }
+
+    public class Message
+    {
+        static readonly public SolidColorBrush ReceivedMessageColor = new SolidColorBrush(Color.FromArgb(255, 13, 13, 13));
+        static readonly public SolidColorBrush ReceivedMessageTextColor = new SolidColorBrush(Color.FromArgb(255, 13, 13, 13));
+        static readonly public SolidColorBrush SendMessageColor = new SolidColorBrush(Color.FromArgb(255, 252, 232, 3));
+        static readonly public SolidColorBrush SendMessageColorTextColor = new SolidColorBrush(Color.FromArgb(255, 255, 252, 255));
+
+        public string Text;
+        public string Time;
+        public SolidColorBrush Background;
+        public SolidColorBrush Foreground;
+        public Message(string text, bool isReceived)
+        {
+            Text = text;
+            Time = $"{DateTime.Now.Hour} + {DateTime.Now.Minute}";
+            if (isReceived)
+            {
+                Background = ReceivedMessageColor;
+                Foreground = ReceivedMessageTextColor;
+            }
+            else
+            {
+                Background = SendMessageColor;
+                Foreground = SendMessageColorTextColor;
             }
         }
     }
