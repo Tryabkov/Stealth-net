@@ -10,34 +10,74 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../resources/resources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="9"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200" MinWidth="180"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.RowSpan="2" Margin="5">
-            <TextBlock Text="Ur Ip:" Margin="0,5,0,0"/>
-            <TextBlock Margin="0,3,0,5" Text="{Binding Ip_TextBlock, Mode=OneWay}"/>
-            <Button Content="Update" Command="{Binding UpdateIp_ButtonClick}"/> 
-            <TextBlock Text="Receiver IP:" Margin="0,20,0,2"/>
-            <TextBox Margin="0,2,0,2" Text="{Binding ReceiverIp_TextBox, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus}"/>
-            <Button Content="Connect" Margin="0,2,0,0" Command="{Binding Connect_ButtonClick}"/>
+        <Rectangle Fill="#FFE8E8E8" Grid.RowSpan="3" Panel.ZIndex="1">
+            <Rectangle.Effect>
+                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" Opacity="0.25"/>
+            </Rectangle.Effect>
+        </Rectangle>
+        <StackPanel Grid.RowSpan="2" Margin="10,15,10,5" Panel.ZIndex="2">
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,5">
+                <TextBlock Text="Ur Ip:" VerticalAlignment="Center" FontSize="15"/>
+                <TextBox Text="{Binding LocalIp_TextBlock, Mode=TwoWay}" Margin="5,0,5,0" VerticalAlignment="Center" 
+                         FontSize="15" MouseDown="TextBlock_MouseDown" Background="Transparent" BorderBrush="#00ABADB3"/>
+                <Button Command="{Binding UpdateIp_ButtonClick}" Style="{StaticResource ImageButtonStyle}"
+                        BorderBrush="#00000000" Height="14" Width="14" Margin="6,0,0,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="{StaticResource circle_arrow_blackDrawingImage}" Stretch="Uniform"/>
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+
+            <TextBlock Text="Receiver IP:" Margin="2,20,0,2"/>
+            <TextBox Margin="2,2,2,2"
+                     Text="{Binding ReceiverIp_TextBox, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus}" BorderBrush="#00ABADB3" Background="#FFFDFDFD"/>
+            <Button Content="Connect" Margin="0,4,0,0"
+                    Command="{Binding Connect_ButtonClick}" Style="{StaticResource BalckButtonStyle}"/>
         </StackPanel>
 
-        <Grid Grid.Column="1" Grid.Row="1">
+        <ListView Grid.Column="1" ItemsSource="{Binding Messages}" VerticalAlignment="Bottom"
+                 Margin="15,0,15,0" BorderBrush="White" HorizontalAlignment="Left" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="6" Background="{Binding Background}">
+                        <TextBlock Text="{Binding Text}" Foreground="{Binding Foreground}" Margin="5,5,4,4" FontSize="14" Padding="2,0,2,3"/>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListView>
+
+        <Rectangle Fill="#FFE8E8E8" Grid.Row="1"/>
+        <Grid Grid.Column="1" Grid.Row="1" Width="596">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="45"/>
             </Grid.ColumnDefinitions>
             
-            <TextBlock/>
-            <Button Grid.Column="1" Margin="3"/>
+            <TextBox Text="{Binding Main_TextBox, Mode=TwoWay}" BorderBrush="White" Margin="5,0,0,0" VerticalContentAlignment="Center" FontSize="16" Style="{StaticResource BaseTextBoxStyle}" BorderThickness="2,2,2,2" Padding="4,0,4,0" MinWidth="100"/>
+            <Button Grid.Column="1" Margin="5,3,6,3" Command="{Binding Send_ButtonClick}" Style="{StaticResource ImageButtonStyle}">
+                <Button.Background>
+                    <ImageBrush ImageSource="{Binding Mode=OneWay, Source={StaticResource arrow_upDrawingImage}}"/>
+                </Button.Background>
+            </Button>
         </Grid>
     </Grid>
 </Window>
