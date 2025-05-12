@@ -1,6 +1,5 @@
 <h1>Stealth Net</h1>
 
-<h2>!!! StealthNet is under active development. THERE MAY BE ISSUES !!!<br><br>
 Stealth Net is a messenger that provides the highest level of user security and privacy.</h2>
 <h3>Оur advantages and features
 <ul>
